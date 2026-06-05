@@ -24,4 +24,6 @@ $router->add('GET', '/register', 'UserController', 'register');
 $router->add('POST', '/register', 'UserController', 'register');
 $router->add('GET', '/login', 'UserController', 'login');
 $router->add('POST', '/login', 'UserController', 'login');
+$router->add('GET', '/dashboard', 'DashboardController', 'index');
+$router->add('GET', '/logout', 'DashboardController', 'logout');
 $router->dispatch($_SERVER['REQUEST_URI'];
