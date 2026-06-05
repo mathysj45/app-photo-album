@@ -13,7 +13,15 @@ class DashboardController extends Controller {
 
     public function index(): void {
         $albumModel = new Album();
+        $tagModel = new \App\Models\Tag();
+        
         $albums = $albumModel->getByUser(Auth::id());
+        
+        foreach ($albums as &$album) {
+            $album['tags'] = $tagModel->getByAlbum($album['id']);
+        }
+        unset($album);
+
         $this->render('dashboard', ['albums' => $albums]);
     }
 

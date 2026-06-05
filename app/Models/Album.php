@@ -12,14 +12,15 @@ class Album {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function create(int $userId, string $title, ?string $description, string $visibility): bool {
+    public function create(int $userId, string $title, ?string $description, string $visibility): int|false {
         $stmt = $this->db->prepare("INSERT INTO albums (user_id, title, description, visibility) VALUES (:user_id, :title, :description, :visibility)");
-        return $stmt->execute([
+        $success = $stmt->execute([
             'user_id' => $userId,
             'title' => $title,
             'description' => $description,
             'visibility' => $visibility
         ]);
+        return $success ? (int)$this->db->lastInsertId() : false;
     }
 
     public function getByUser(int $userId): array {

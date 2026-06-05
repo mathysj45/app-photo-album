@@ -18,7 +18,8 @@
             <li>
                 <strong><a href="/album/show?id=<?= $album['id'] ?>"><?= htmlspecialchars($album['title']) ?></a></strong>
                 <p><?= htmlspecialchars((string)$album['description']) ?></p>
-                <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small>
+                <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small><br>
+                    <small>Étiquettes: <?= htmlspecialchars(implode(', ', $album['tags'])) ?></small>
                 <br>
                 <a href="/photo/upload?album_id=<?= $album['id'] ?>">Ajouter une photo</a>
             </li>

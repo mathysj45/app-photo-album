@@ -16,12 +16,26 @@ class AlbumController extends Controller {
             $title = trim($_POST['title'] ?? '');
             $description = trim($_POST['description'] ?? null);
             $visibility = $_POST['visibility'] ?? 'private';
+            $tagsInput = $_POST['tags'] ?? '';
 
             if (!empty($title)) {
                 $albumModel = new Album();
                 $userId = Auth::id();
                 
-                if ($albumModel->create($userId, $title, $description, $visibility)) {
+                $albumId = $albumModel->create($userId, $title, $description, $visibility);
+                
+                if ($albumId) {
+                    if (!empty($tagsInput)) {
+                        $tagModel = new \App\Models\Tag();
+                        $tagsArray = array_unique(array_filter(array_map('trim', explode(',', $tagsInput))));
+                        
+                        foreach ($tagsArray as $tagName) {
+                            if (!empty($tagName)) {
+                                $tagId = $tagModel->findOrCreate($tagName);
+                                $tagModel->attachToAlbum($albumId, $tagId);
+                            }
+                        }
+                    }
                     header('Location: /dashboard');
                     exit;
                 }

@@ -10,6 +10,7 @@
     <form action="/album/create" method="POST">
         <input type="text" name="title" placeholder="Titre de l'album" required>
         <textarea name="description" placeholder="Description"></textarea>
+        <input type="text" name="tags" placeholder="Étiquettes (séparées par des virgules)">
         <select name="visibility">
             <option value="private">Privé</option>
             <option value="public">Public</option>
