@@ -20,4 +20,8 @@ spl_autoload_register(function ($class) {
 });
 
 $router = new App\Core\Router();
+$router->add('GET', '/register', 'UserController', 'register');
+$router->add('POST', '/register', 'UserController', 'register');
+$router->add('GET', '/login', 'UserController', 'login');
+$router->add('POST', '/login', 'UserController', 'login');
 $router->dispatch($_SERVER['REQUEST_URI'];
