@@ -11,6 +11,17 @@
         <a href="/logout">Se déconnecter</a>
     </nav>
     <main>
+    <h2>Vos albums</h2>
+    <a href="/album/create">Créer un album</a>
+    <ul>
+        <?php foreach ($albums as $album): ?>
+            <li>
+                <strong><?= htmlspecialchars($album['title']) ?></strong>
+                <p><?= htmlspecialchars($album['description']) ?></p>
+                <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small>
+            </li>
+        <?php endforeach; ?>
+    </ul>
     </main>
 </body>
 </html>

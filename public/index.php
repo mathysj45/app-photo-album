@@ -26,4 +26,6 @@ $router->add('GET', '/login', 'UserController', 'login');
 $router->add('POST', '/login', 'UserController', 'login');
 $router->add('GET', '/dashboard', 'DashboardController', 'index');
 $router->add('GET', '/logout', 'DashboardController', 'logout');
+$router->add('GET', '/album/create', 'AlbumController', 'create');
+$router->add('POST', '/album/create', 'AlbumController', 'create');
 $router->dispatch($_SERVER['REQUEST_URI'];
