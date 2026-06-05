@@ -19,9 +19,10 @@
                 <strong><?= htmlspecialchars($album['title']) ?></strong>
                 <p><?= htmlspecialchars($album['description']) ?></p>
                 <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small>
+                <a href="/photo/upload?album_id=<?= $album['id'] ?>">Ajouter une photo</a>
             </li>
         <?php endforeach; ?>
     </ul>
-    </main>
+</main>
 </body>
 </html>
