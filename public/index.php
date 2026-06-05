@@ -30,4 +30,6 @@ $router->add('GET', '/album/create', 'AlbumController', 'create');
 $router->add('POST', '/album/create', 'AlbumController', 'create');
 $router->add('GET', '/photo/upload', 'PhotoController', 'upload');
 $router->add('POST', '/photo/upload', 'PhotoController', 'upload');
+$router->add('GET', '/album/show', 'AlbumController', 'show');
+$router->add('POST', '/comment/create', 'CommentController', 'create');
 $router->dispatch($_SERVER['REQUEST_URI'];

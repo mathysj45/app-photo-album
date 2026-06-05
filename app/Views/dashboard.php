@@ -16,9 +16,10 @@
     <ul>
         <?php foreach ($albums as $album): ?>
             <li>
-                <strong><?= htmlspecialchars($album['title']) ?></strong>
-                <p><?= htmlspecialchars($album['description']) ?></p>
+                <strong><a href="/album/show?id=<?= $album['id'] ?>"><?= htmlspecialchars($album['title']) ?></a></strong>
+                <p><?= htmlspecialchars((string)$album['description']) ?></p>
                 <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small>
+                <br>
                 <a href="/photo/upload?album_id=<?= $album['id'] ?>">Ajouter une photo</a>
             </li>
         <?php endforeach; ?>
