@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Models;
 
-use App\Config\Database;
+use App\Core\Database;
 use PDO;
 
 class User {
@@ -16,9 +16,9 @@ class User {
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $stmt = $this->db->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
         return $stmt->execute([
-            ':username' => $username,
-            ':email' => $email,
-            ':password_hash' => $hash
+            'username' => $username,
+            'email' => $email,
+            'password_hash' => $hash
         ]);
     }
 

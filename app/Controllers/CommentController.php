@@ -22,7 +22,7 @@ class CommentController extends Controller {
                 $commentModel->create($photoId, Auth::id(), $content);
             }
             
-            header('Location: /album/show?id=' . $albumId);
+            header('Location: ' . BASE_URL . '/album/show?id=' . $albumId);
             exit;
         }
     }

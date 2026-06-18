@@ -19,7 +19,7 @@ class PhotoController extends Controller {
         $albumId = filter_input(INPUT_GET, 'album_id', FILTER_VALIDATE_INT);
 
         if (!$albumId) {
-            header('Location: /dashboard');
+            header('Location: ' . BASE_URL . '/dashboard');
             exit;
         }
 
@@ -46,7 +46,7 @@ class PhotoController extends Controller {
                         $relativePath = '/uploads/' . $newFileName;
                         
                         if ($photoModel->create($albumId, $relativePath, $description)) {
-                            header("Location: /dashboard");
+                            header('Location: ' . BASE_URL . '/dashboard');
                             exit;
                         }
                     }

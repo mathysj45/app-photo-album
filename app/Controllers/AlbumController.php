@@ -36,7 +36,7 @@ class AlbumController extends Controller {
                             }
                         }
                     }
-                    header('Location: /dashboard');
+                    header('Location: ' . BASE_URL . '/dashboard');
                     exit;
                 }
             }
@@ -48,7 +48,7 @@ class AlbumController extends Controller {
         $albumId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         
         if (!$albumId) {
-            header('Location: /dashboard');
+            header('Location: ' . BASE_URL . '/dashboard');
             exit;
         }
 
