@@ -28,4 +28,10 @@ class Album {
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
     }
+
+    public function getById(int $id): array|false {
+        $stmt = $this->db->prepare("SELECT * FROM albums WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
 }

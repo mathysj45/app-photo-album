@@ -52,6 +52,31 @@ class AlbumController extends Controller {
             exit;
         }
 
+        $albumModel = new \App\Models\Album();
+        $album = $albumModel->getById($albumId);
+
+        if (!$album) {
+            header('Location: ' . BASE_URL . '/dashboard');
+            exit;
+        }
+
+        $userId = Auth::id();
+
+        if ((int)$album['user_id'] !== $userId && $album['visibility'] !== 'public') {
+            if ($album['visibility'] === 'private') {
+                header('Location: ' . BASE_URL . '/dashboard');
+                exit;
+            }
+
+            if ($album['visibility'] === 'restricted') {
+                $accessModel = new \App\Models\AlbumAccess();
+                if (!$accessModel->hasAccess($albumId, $userId)) {
+                    header('Location: ' . BASE_URL . '/dashboard');
+                    exit;
+                }
+            }
+        }
+
         $photoModel = new \App\Models\Photo();
         $commentModel = new \App\Models\Comment();
         
@@ -63,6 +88,7 @@ class AlbumController extends Controller {
         unset($photo);
 
         $this->render('album_show', [
+            'album' => $album,
             'photos' => $photos,
             'album_id' => $albumId
         ]);
