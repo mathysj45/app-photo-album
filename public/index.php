@@ -1,6 +1,10 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 session_start();
+define('BASE_URL', '/app-photo-album/public');
 
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
@@ -20,6 +24,7 @@ spl_autoload_register(function ($class) {
 });
 
 $router = new App\Core\Router();
+$router->add('GET', '/', 'UserController', 'login');
 $router->add('GET', '/register', 'UserController', 'register');
 $router->add('POST', '/register', 'UserController', 'register');
 $router->add('GET', '/login', 'UserController', 'login');
@@ -32,4 +37,4 @@ $router->add('GET', '/photo/upload', 'PhotoController', 'upload');
 $router->add('POST', '/photo/upload', 'PhotoController', 'upload');
 $router->add('GET', '/album/show', 'AlbumController', 'show');
 $router->add('POST', '/comment/create', 'CommentController', 'create');
-$router->dispatch($_SERVER['REQUEST_URI'];
+$router->dispatch($_SERVER['REQUEST_URI']);

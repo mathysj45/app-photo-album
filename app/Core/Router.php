@@ -14,14 +14,25 @@ class Router {
         ];
     }
 
-    public function dispatch(string $uri) : void {
+    public function dispatch(string $uri): void {
         $parsedUrl = parse_url($uri);
         $path = $parsedUrl['path'] ?? '/';
+        
+        $basePath = '/app-photo-album/public';
+        if (strpos($path, $basePath) === 0) {
+            $path = substr($path, strlen($basePath));
+        }
+        
+        if ($path === '') {
+            $path = '/';
+        }
+
         $method = $_SERVER['REQUEST_METHOD'];
 
         foreach ($this->routes as $route) {
             if ($route['path'] === $path && $route['method'] === $method) {
-                $controllerClass = 'App\\Controllers\\' . $route['controller'];
+                $controllerClass = "\\App\\Controllers\\" . $route['controller'];
+                
                 if (class_exists($controllerClass)) {
                     $controllerInstance = new $controllerClass();
                     if (method_exists($controllerInstance, $route['action'])) {
@@ -31,5 +42,8 @@ class Router {
                 }
             }
         }
+        
+        http_response_code(404);
+        echo "404 Not Found";
     }
 }

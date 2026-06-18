@@ -15,7 +15,7 @@ class UserController extends Controller {
             if (!empty($username) && !empty($email) && !empty($password)) {
                 $userModel = new User();
                 if ($userModel->create($username, $email, $password)) {
-                    header('Location: /login');
+                    header('Location: ' . BASE_URL . '/login');
                     exit;
                 }
             }
@@ -34,7 +34,7 @@ class UserController extends Controller {
 
                 if ($user && password_verify($password, $user['password_hash'])) {
                     $_SESSION['user_id'] = $user['id'];
-                    header('Location: /dashboard');
+                    header('Location: ' . BASE_URL . '/dashboard');
                     exit;
                 }
             }
