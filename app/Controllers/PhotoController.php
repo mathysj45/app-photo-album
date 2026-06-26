@@ -56,4 +56,55 @@ class PhotoController extends Controller {
 
         $this->render('upload_photo', ['album_id' => $albumId]);
     }
+
+    public function edit(): void {
+        $photoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$photoId) {
+            header('Location: ' . BASE_URL . '/dashboard');
+            exit;
+        }
+
+        $photoModel = new Photo();
+        $photo = $photoModel->getById($photoId);
+
+        if (!$photo || (int)$photo['user_id'] !== Auth::id()) {
+            header('Location: ' . BASE_URL . '/dashboard');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $description = trim($_POST['description'] ?? '');
+            $captureDate = trim($_POST['capture_date'] ?? '');
+            $location = trim($_POST['location'] ?? '');
+
+            $photoModel->update($photoId, $description, $captureDate, $location);
+            header('Location: ' . BASE_URL . '/album/show?id=' . $photo['album_id']);
+            exit;
+        }
+
+        $this->render('photo_edit', ['photo' => $photo]);
+    }
+
+    public function delete(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $photoId = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+            $albumId = filter_input(INPUT_POST, 'album_id', FILTER_VALIDATE_INT);
+
+            if ($photoId) {
+                $photoModel = new Photo();
+                $photo = $photoModel->getById($photoId);
+
+                if ($photo && (int)$photo['user_id'] === Auth::id()) {
+                    $filePath = __DIR__ . '/../../public' . $photo['file_path'];
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                    $photoModel->delete($photoId);
+                }
+            }
+            $redirectUrl = $albumId ? '/album/show?id=' . $albumId : '/dashboard';
+            header('Location: ' . BASE_URL . $redirectUrl);
+            exit;
+        }
+    }
 }

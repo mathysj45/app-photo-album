@@ -41,4 +41,7 @@ $router->add('GET', '/album/edit', 'AlbumController', 'edit');
 $router->add('POST', '/album/edit', 'AlbumController', 'edit');
 $router->add('POST', '/album/delete', 'AlbumController', 'delete');
 $router->add('POST', '/comment/delete', 'CommentController', 'delete');
+$router->add('GET', '/photo/edit', 'PhotoController', 'edit');
+$router->add('POST', '/photo/edit', 'PhotoController', 'edit');
+$router->add('POST', '/photo/delete', 'PhotoController', 'delete');
 $router->dispatch($_SERVER['REQUEST_URI']);

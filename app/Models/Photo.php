@@ -26,4 +26,25 @@ class Photo {
         $stmt->execute(['album_id' => $albumId]);
         return $stmt->fetchAll();
     }
+
+    public function getById(int $id): array|false {
+        $stmt = $this->db->prepare("SELECT p.*, a.user_id FROM photos p JOIN albums a ON p.album_id = a.id WHERE p.id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
+
+    public function update(int $id, ?string $description, ?string $captureDate, ?string $location): bool {
+        $stmt = $this->db->prepare("UPDATE photos SET description = :description, capture_date = :capture_date, location = :location WHERE id = :id");
+        return $stmt->execute([
+            'id' => $id,
+            'description' => $description,
+            'capture_date' => empty($captureDate) ? null : $captureDate,
+            'location' => $location
+        ]);
+    }
+
+    public function delete(int $id): bool {
+        $stmt = $this->db->prepare("DELETE FROM photos WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
+    }
 }
