@@ -49,4 +49,5 @@ $router->add('POST', '/share/add', 'ShareController', 'add');
 $router->add('POST', '/share/remove', 'ShareController', 'remove');
 $router->add('POST', '/share/token', 'ShareController', 'token');
 $router->add('GET', '/album/shared', 'PublicAlbumController', 'showShared');
+$router->add('POST', '/favorite/toggle', 'FavoriteController', 'toggle');
 $router->dispatch($_SERVER['REQUEST_URI']);

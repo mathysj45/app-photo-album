@@ -39,4 +39,16 @@ class AlbumAccess {
         $stmt->execute(['album_id' => $albumId]);
         return $stmt->fetchAll();
     }
+
+    public function getSharedWithUser(int $userId): array {
+        $stmt = $this->db->prepare("
+            SELECT a.*, aa.permission, u.username as owner_name 
+            FROM album_access aa 
+            JOIN albums a ON aa.album_id = a.id 
+            JOIN users u ON a.user_id = u.id 
+            WHERE aa.user_id = :user_id
+        ");
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
 }
