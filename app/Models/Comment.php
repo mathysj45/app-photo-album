@@ -26,4 +26,15 @@ class Comment {
         $stmt->execute(['photo_id' => $photoId]);
         return $stmt->fetchAll();
     }
+
+    public function getById(int $id): array|false {
+        $stmt = $this->db->prepare("SELECT * FROM comments WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
+
+    public function delete(int $id): bool {
+        $stmt = $this->db->prepare("DELETE FROM comments WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
+    }
 }

@@ -44,6 +44,50 @@ class AlbumController extends Controller {
         $this->render('create_album');
     }
 
+    public function edit(): void {
+        $albumId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$albumId) { 
+            header('Location: ' . BASE_URL . '/dashboard'); 
+            exit; 
+        }
+
+        $albumModel = new \App\Models\Album();
+        $album = $albumModel->getById($albumId);
+
+        if (!$album || (int)$album['user_id'] !== Auth::id()) {
+            header('Location: ' . BASE_URL . '/dashboard'); 
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $title = trim($_POST['title'] ?? '');
+            $description = trim($_POST['description'] ?? null);
+            $visibility = $_POST['visibility'] ?? 'private';
+
+            if (!empty($title)) {
+                $albumModel->update($albumId, $title, $description, $visibility);
+                header('Location: ' . BASE_URL . '/album/show?id=' . $albumId);
+                exit;
+            }
+        }
+        $this->render('album_edit', ['album' => $album]);
+    }
+
+    public function delete(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $albumId = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+            if ($albumId) {
+                $albumModel = new \App\Models\Album();
+                $album = $albumModel->getById($albumId);
+                if ($album && (int)$album['user_id'] === Auth::id()) {
+                    $albumModel->delete($albumId);
+                }
+            }
+        }
+        header('Location: ' . BASE_URL . '/dashboard');
+        exit;
+    }
+
     public function show(): void {
         $albumId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         

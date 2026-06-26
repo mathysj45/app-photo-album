@@ -7,31 +7,62 @@
     <title>Visionnage de l'album</title>
 </head>
 <body>
-    <a href="<?= BASE_URL ?>/dashboard">Retour au tableau de bord</a>
-    <h1>Photos de l'album</h1>
-    
-    <?php foreach ($photos as $photo): ?>
-        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
-            <img src="<?= BASE_URL ?><?= htmlspecialchars($photo['file_path']) ?>" alt="Photo" style="max-width: 300px; display: block;">
-            <p><?= htmlspecialchars((string)$photo['description']) ?></p>
-            
-            <h3>Commentaires</h3>
-            <ul>
-                <?php foreach ($photo['comments'] as $comment): ?>
-                    <li>
-                        <strong><?= htmlspecialchars($comment['username']) ?>:</strong> 
-                        <?= htmlspecialchars($comment['content']) ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            
-            <form action="<?= BASE_URL ?>/comment/create" method="POST">
-                <input type="hidden" name="photo_id" value="<?= $photo['id'] ?>">
-                <input type="hidden" name="album_id" value="<?= $album_id ?>">
-                <input type="text" name="content" placeholder="Ajouter un commentaire..." required>
-                <button type="submit">Envoyer</button>
-            </form>
-        </div>
-    <?php endforeach; ?>
+    <nav>
+        <a href="<?= BASE_URL ?>/dashboard">Retour au tableau de bord</a>
+    </nav>
+    <main>
+        <h1>Photos de l'album : <?= htmlspecialchars($album['title'] ?? '') ?></h1>
+        
+        <?php if (isset($album['user_id']) && $album['user_id'] === $_SESSION['user_id']): ?>
+            <div style="margin-bottom: 20px;">
+                <a href="<?= BASE_URL ?>/album/edit?id=<?= $album['id'] ?>" style="margin-right: 15px;">Éditer l'album</a>
+                <form action="<?= BASE_URL ?>/album/delete" method="POST" style="display:inline;" onsubmit="return confirm('Action irréversible. Confirmer la suppression ?');">
+                    <input type="hidden" name="id" value="<?= $album['id'] ?>">
+                    <button type="submit" style="background-color: #e74c3c;">Supprimer l'album</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($photos)): ?>
+            <?php foreach ($photos as $photo): ?>
+                <div style="border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius); background: #fff;">
+                    <img src="<?= BASE_URL ?><?= htmlspecialchars($photo['file_path']) ?>" alt="Photo" style="max-width: 100%; display: block; border-radius: var(--border-radius); margin-bottom: 10px;">
+                    <p><?= nl2br(htmlspecialchars((string)$photo['description'])) ?></p>
+                    
+                    <h3 style="margin-top: 15px;">Commentaires</h3>
+                    <?php if (!empty($photo['comments'])): ?>
+                        <ul style="display: block; padding-left: 0;">
+                            <?php foreach ($photo['comments'] as $comment): ?>
+                                <li style="margin-bottom: 10px; padding: 10px; background: var(--background-color); border-radius: var(--border-radius); display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong><?= htmlspecialchars($comment['username']) ?>:</strong> 
+                                        <?= nl2br(htmlspecialchars($comment['content'])) ?>
+                                    </div>
+                                    <?php if ($comment['user_id'] === $_SESSION['user_id']): ?>
+                                        <form action="<?= BASE_URL ?>/comment/delete" method="POST" style="display:inline; margin-left: 10px;" onsubmit="return confirm('Supprimer ce commentaire ?');">
+                                            <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
+                                            <input type="hidden" name="album_id" value="<?= $album_id ?>">
+                                            <button type="submit" style="padding: 5px 10px; font-size: 0.8rem; background-color: #e74c3c;">X</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p style="font-size: 0.9rem; color: #666;">Aucun commentaire.</p>
+                    <?php endif; ?>
+                    
+                    <form action="<?= BASE_URL ?>/comment/create" method="POST" style="margin-top: 15px; box-shadow: none; padding: 0; max-width: 100%;">
+                        <input type="hidden" name="photo_id" value="<?= $photo['id'] ?>">
+                        <input type="hidden" name="album_id" value="<?= $album_id ?>">
+                        <input type="text" name="content" placeholder="Ajouter un commentaire..." required style="margin-bottom: 10px;">
+                        <button type="submit">Envoyer</button>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>Cet album ne contient aucune photo pour le moment.</p>
+        <?php endif; ?>
+    </main>
 </body>
 </html>

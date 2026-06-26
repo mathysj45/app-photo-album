@@ -26,4 +26,22 @@ class CommentController extends Controller {
             exit;
         }
     }
+
+    public function delete(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $commentId = filter_input(INPUT_POST, 'comment_id', FILTER_VALIDATE_INT);
+            $albumId = filter_input(INPUT_POST, 'album_id', FILTER_VALIDATE_INT);
+
+            if ($commentId) {
+                $commentModel = new Comment();
+                $comment = $commentModel->getById($commentId);
+                
+                if ($comment && (int)$comment['user_id'] === Auth::id()) {
+                    $commentModel->delete($commentId);
+                }
+            }
+            header('Location: ' . BASE_URL . '/album/show?id=' . $albumId);
+            exit;
+        }
+    }
 }
