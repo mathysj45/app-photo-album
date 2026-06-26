@@ -27,7 +27,7 @@
         <?php if (!empty($photos)): ?>
             <?php foreach ($photos as $photo): ?>
                 <div style="border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius); background: #fff;">
-                    <img src="<?= BASE_URL ?><?= htmlspecialchars($photo['file_path']) ?>" alt="Photo" style="max-width: 100%; display: block; border-radius: var(--border-radius); margin-bottom: 10px;">
+                    <img src="<?= BASE_URL ?><?= htmlspecialchars($photo['file_path']) ?>" alt="Photo" class="photo-trigger" style="max-width: 100%; display: block; border-radius: var(--border-radius); margin-bottom: 10px;">
                     <p><?= nl2br(htmlspecialchars((string)$photo['description'])) ?></p>
                     
                     <?php if (!empty($photo['capture_date'])): ?>
@@ -90,5 +90,7 @@
             <p>Cet album ne contient aucune photo pour le moment.</p>
         <?php endif; ?>
     </main>
+
+    <script src="<?= BASE_URL ?>/js/app.js"></script>
 </body>
 </html>
