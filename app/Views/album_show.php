@@ -16,6 +16,7 @@
         <?php if (isset($album['user_id']) && $album['user_id'] === $_SESSION['user_id']): ?>
             <div style="margin-bottom: 20px;">
                 <a href="<?= BASE_URL ?>/album/edit?id=<?= $album['id'] ?>" style="margin-right: 15px;">Éditer l'album</a>
+                <a href="<?= BASE_URL ?>/share/manage?id=<?= $album['id'] ?>" style="margin-right: 15px; color: #2ecc71;">Gérer les partages</a>
                 <form action="<?= BASE_URL ?>/album/delete" method="POST" style="display:inline;" onsubmit="return confirm('Action irréversible. Confirmer la suppression ?');">
                     <input type="hidden" name="id" value="<?= $album['id'] ?>">
                     <button type="submit" style="background-color: #e74c3c;">Supprimer l'album</button>
@@ -47,7 +48,7 @@
                             </form>
                         </div>
                     <?php endif; ?>
-                    
+
                     <h3 style="margin-top: 15px;">Commentaires</h3>
                     <?php if (!empty($photo['comments'])): ?>
                         <ul style="display: block; padding-left: 0;">

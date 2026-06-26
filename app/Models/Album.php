@@ -49,4 +49,15 @@ class Album {
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
+
+    public function updateShareToken(int $id, ?string $token): bool {
+        $stmt = $this->db->prepare("UPDATE albums SET share_token = :token WHERE id = :id");
+        return $stmt->execute(['id' => $id, 'token' => $token]);
+    }
+
+    public function getByToken(string $token): array|false {
+        $stmt = $this->db->prepare("SELECT * FROM albums WHERE share_token = :token");
+        $stmt->execute(['token' => $token]);
+        return $stmt->fetch();
+    }
 }
