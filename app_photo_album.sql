@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 28 juin 2026 à 19:24
+-- Généré le : dim. 28 juin 2026 à 20:44
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -42,8 +42,7 @@ CREATE TABLE `albums` (
 --
 
 INSERT INTO `albums` (`id`, `user_id`, `title`, `description`, `visibility`, `created_at`, `share_token`) VALUES
-(1, 1, 'Photo Soka', 'Toute les photos de soka hihi', 'public', '2026-06-18 11:54:26', 'bb59fdf801f224aee51c8a252e5fecae'),
-(3, 1, 'test log', 'test log', 'private', '2026-06-28 19:11:52', NULL);
+(1, 1, 'Photo Soka', 'Toute les photos de soka hihi', 'public', '2026-06-18 11:54:26', '4f5f62a64e6ae9ac19335d35d21c756c');
 
 -- --------------------------------------------------------
 
@@ -56,6 +55,13 @@ CREATE TABLE `album_access` (
   `user_id` int(11) NOT NULL,
   `permission` enum('view','edit') DEFAULT 'view'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `album_access`
+--
+
+INSERT INTO `album_access` (`album_id`, `user_id`, `permission`) VALUES
+(1, 2, 'view');
 
 -- --------------------------------------------------------
 
@@ -75,8 +81,7 @@ CREATE TABLE `album_tags` (
 INSERT INTO `album_tags` (`album_id`, `tag_id`) VALUES
 (1, 1),
 (1, 2),
-(1, 3),
-(3, 4);
+(1, 3);
 
 -- --------------------------------------------------------
 
@@ -91,6 +96,16 @@ CREATE TABLE `comments` (
   `content` text NOT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `comments`
+--
+
+INSERT INTO `comments` (`id`, `photo_id`, `user_id`, `content`, `created_at`) VALUES
+(3, 5, 2, 'Trop mimi', '2026-06-28 19:34:40'),
+(4, 4, 1, 'trop moche le chien', '2026-06-28 19:43:49'),
+(5, 2, 1, 'trop bien', '2026-06-28 20:05:26'),
+(6, 3, 1, 'Trop mimi', '2026-06-28 20:08:00');
 
 -- --------------------------------------------------------
 
@@ -108,6 +123,7 @@ CREATE TABLE `favorite_photos` (
 --
 
 INSERT INTO `favorite_photos` (`user_id`, `photo_id`) VALUES
+(1, 2),
 (1, 3),
 (1, 5);
 
@@ -182,15 +198,18 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `profile_pic` varchar(255) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp(),
+  `bio` text DEFAULT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `profile_pic`, `created_at`) VALUES
-(1, 'Mathys', 'azerty@gmail.com', '$2y$10$fiHOc/4hNoQ5dTLIgM0tB.4cqQke/xcNwUm9JsGRK/b24G.j9QLJe', NULL, '2026-06-18 11:53:09');
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `profile_pic`, `created_at`, `bio`, `profile_picture`) VALUES
+(1, 'Mathys', 'azerty@gmail.com', '$2y$10$fiHOc/4hNoQ5dTLIgM0tB.4cqQke/xcNwUm9JsGRK/b24G.j9QLJe', NULL, '2026-06-18 11:53:09', 'Oui c\'est moi Mathys', '/uploads/profiles/profile_1_1782672015.png'),
+(2, 'Romain', 'qwerty@gmail.com', '$2y$10$.6FEk6DpWocn.uXjxgLezeL1/7DpboAqEkJab7YDjGGEpY2pyw7kW', NULL, '2026-06-28 19:31:02', NULL, NULL);
 
 --
 -- Index pour les tables déchargées
@@ -274,7 +293,7 @@ ALTER TABLE `albums`
 -- AUTO_INCREMENT pour la table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `photos`
@@ -292,7 +311,7 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Contraintes pour les tables déchargées
