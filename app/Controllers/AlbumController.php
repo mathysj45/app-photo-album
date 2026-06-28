@@ -86,7 +86,14 @@ class AlbumController extends Controller {
         $photoModel = new Photo();
         $commentModel = new Comment();
         
-        $photos = $photoModel->getByAlbum($albumId);
+        $photosPerPage = 12;
+        $currentPage = max(1, filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1);
+        
+        $totalPhotos = $photoModel->countByAlbum($albumId);
+        $totalPages = ceil($totalPhotos / $photosPerPage);
+        $offset = ($currentPage - 1) * $photosPerPage;
+
+        $photos = $photoModel->getPaginatedByAlbum($albumId, $photosPerPage, $offset);
         
         foreach ($photos as &$photo) {
             $photo['comments'] = $commentModel->getByPhoto($photo['id']);
@@ -96,7 +103,9 @@ class AlbumController extends Controller {
         $this->render('album_show', [
             'album' => $album,
             'photos' => $photos,
-            'album_id' => $albumId
+            'album_id' => $albumId,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
         ]);
     }
 

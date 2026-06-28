@@ -47,4 +47,19 @@ class Photo {
         $stmt = $this->db->prepare("DELETE FROM photos WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }
+
+    public function countByAlbum(int $albumId): int {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM photos WHERE album_id = :album_id");
+        $stmt->execute(['album_id' => $albumId]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getPaginatedByAlbum(int $albumId, int $limit, int $offset): array {
+        $stmt = $this->db->prepare("SELECT * FROM photos WHERE album_id = :album_id ORDER BY id DESC LIMIT :limit OFFSET :offset");
+        $stmt->bindValue(':album_id', $albumId, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
