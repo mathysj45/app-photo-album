@@ -50,4 +50,8 @@ $router->add('POST', '/share/remove', 'ShareController', 'remove');
 $router->add('POST', '/share/token', 'ShareController', 'token');
 $router->add('GET', '/album/shared', 'PublicAlbumController', 'showShared');
 $router->add('POST', '/favorite/toggle', 'FavoriteController', 'toggle');
+$router->add('GET', '/profile/show', 'ProfileController', 'show');
+$router->add('GET', '/profile/edit', 'ProfileController', 'edit');
+$router->add('POST', '/profile/edit', 'ProfileController', 'edit');
+$router->add('GET', '/search', 'SearchController', 'index');
 $router->dispatch($_SERVER['REQUEST_URI']);

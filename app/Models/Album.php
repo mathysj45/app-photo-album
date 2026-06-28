@@ -39,7 +39,7 @@ class Album {
     }
 
     public function getByUser(int $userId): array {
-        $stmt = $this->db->prepare("SELECT * FROM albums WHERE user_id = :user_id ORDER BY created_at DESC");
+        $stmt = $this->db->prepare("SELECT * FROM albums WHERE user_id = :user_id ORDER BY id DESC");
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
     }
@@ -59,5 +59,21 @@ class Album {
         $stmt = $this->db->prepare("SELECT * FROM albums WHERE share_token = :token");
         $stmt->execute(['token' => $token]);
         return $stmt->fetch();
+    }
+
+    public function getPublicOrSharedAlbumsByOwner(int $ownerId, int $viewerId): array {
+        $stmt = $this->db->prepare("
+            SELECT DISTINCT a.* FROM albums a
+            LEFT JOIN album_access aa ON a.id = aa.album_id
+            WHERE a.user_id = :owner_id 
+            AND (a.visibility = 'public' OR a.user_id = :viewer_id_1 OR (a.visibility = 'restricted' AND aa.user_id = :viewer_id_2))
+            ORDER BY a.id DESC
+        ");
+        $stmt->execute([
+            'owner_id' => $ownerId, 
+            'viewer_id_1' => $viewerId,
+            'viewer_id_2' => $viewerId
+        ]);
+        return $stmt->fetchAll();
     }
 }

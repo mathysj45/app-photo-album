@@ -64,4 +64,41 @@ class Photo {
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function searchPhotos(int $userId, string $query, string $tag, string $date): array {
+        $sql = "
+            SELECT DISTINCT p.*, a.title as album_title 
+            FROM photos p
+            JOIN albums a ON p.album_id = a.id
+            LEFT JOIN album_tags at ON a.id = at.album_id
+            LEFT JOIN tags t ON at.tag_id = t.id
+            LEFT JOIN album_access aa ON a.id = aa.album_id
+            WHERE (a.user_id = :owner_id OR a.visibility = 'public' OR (a.visibility = 'restricted' AND aa.user_id = :viewer_id))
+        ";
+        
+        $params = [
+            'owner_id' => $userId,
+            'viewer_id' => $userId
+        ];
+
+        if (!empty($query)) {
+            $sql .= " AND (p.description LIKE :query_desc OR a.title LIKE :query_title)";
+            $params['query_desc'] = '%' . $query . '%';
+            $params['query_title'] = '%' . $query . '%';
+        }
+        if (!empty($tag)) {
+            $sql .= " AND t.name = :tag";
+            $params['tag'] = $tag;
+        }
+        if (!empty($date)) {
+            $sql .= " AND p.capture_date = :date";
+            $params['date'] = $date;
+        }
+
+        $sql .= " ORDER BY p.id DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
 }

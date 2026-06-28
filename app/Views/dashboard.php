@@ -8,7 +8,12 @@
 </head>
 <body>
     <nav>
-        <span style="color: white; font-weight: bold;">Mon Application Photo</span>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <span style="color: white; font-weight: bold; margin-right: 10px;">Mon Application Photo</span>
+            <a href="<?= BASE_URL ?>/dashboard">Tableau de bord</a>
+            <a href="<?= BASE_URL ?>/search">Recherche</a>
+            <a href="<?= BASE_URL ?>/profile/show">Mon Profil</a>
+        </div>
         <a href="<?= BASE_URL ?>/logout" style="color: var(--danger-color);">Se déconnecter</a>
     </nav>
     <main>
