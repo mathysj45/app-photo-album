@@ -25,32 +25,48 @@ class PhotoController extends Controller {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $description = trim($_POST['description'] ?? '');
+            // Récupération des nouveaux champs
+            $captureDate = !empty($_POST['capture_date']) ? trim($_POST['capture_date']) : null;
+            $location = trim($_POST['location'] ?? '');
             
-            if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-                $fileTmpPath = $_FILES['photo']['tmp_name'];
-                $fileSize = $_FILES['photo']['size'];
-                $fileType = mime_content_type($fileTmpPath);
+            if (isset($_FILES['photos'])) {
+                $photoModel = new \App\Models\Photo();
+                $uploadDir = __DIR__ . '/../../public/uploads/';
+                
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
 
-                if (in_array($fileType, self::ALLOWED_TYPES) && $fileSize <= self::MAX_SIZE) {
-                    $extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-                    $newFileName = uniqid('img_', true) . '.' . $extension;
-                    $uploadDir = __DIR__ . '/../../public/uploads/';
-                    $destPath = $uploadDir . $newFileName;
+                $fileCount = count($_FILES['photos']['name']);
+                $successCount = 0;
 
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0755, true);
-                    }
+                for ($i = 0; $i < $fileCount; $i++) {
+                    if ($_FILES['photos']['error'][$i] === UPLOAD_ERR_OK) {
+                        $fileTmpPath = $_FILES['photos']['tmp_name'][$i];
+                        $fileSize = $_FILES['photos']['size'][$i];
+                        $fileType = mime_content_type($fileTmpPath);
 
-                    if (move_uploaded_file($fileTmpPath, $destPath)) {
-                        $photoModel = new Photo();
-                        $relativePath = '/uploads/' . $newFileName;
-                        
-                        if ($photoModel->create($albumId, $relativePath, $description)) {
-                            Logger::log("Photo téléchargée avec succès. Chemin : " . $relativePath, 'INFO');
-                            header("Location: " . BASE_URL . "/dashboard");
-                            exit;
+                        if (in_array($fileType, self::ALLOWED_TYPES) && $fileSize <= self::MAX_SIZE) {
+                            $extension = pathinfo($_FILES['photos']['name'][$i], PATHINFO_EXTENSION);
+                            $newFileName = uniqid('img_', true) . '.' . $extension;
+                            $destPath = $uploadDir . $newFileName;
+
+                            if (move_uploaded_file($fileTmpPath, $destPath)) {
+                                $relativePath = '/uploads/' . $newFileName;
+                                
+                                // Ajout des variables $captureDate et $location à la création
+                                if ($photoModel->create($albumId, $relativePath, $description, $captureDate, $location)) {
+                                    \App\Core\Logger::log("Photo téléchargée avec succès. Chemin : " . $relativePath, 'INFO');
+                                    $successCount++;
+                                }
+                            }
                         }
                     }
+                }
+                
+                if ($successCount > 0) {
+                    header("Location: " . BASE_URL . "/album/show?id=" . $albumId);
+                    exit;
                 }
             }
         }

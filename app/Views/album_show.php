@@ -14,12 +14,14 @@
         <h1>Photos de l'album : <?= htmlspecialchars($album['title'] ?? '') ?></h1>
         
         <?php if (isset($album['user_id']) && $album['user_id'] === $_SESSION['user_id']): ?>
-            <div style="margin-bottom: 30px;">
-                <a href="<?= BASE_URL ?>/album/edit?id=<?= $album['id'] ?>" class="btn" style="margin-right: 15px;">Éditer l'album</a>
-                <a href="<?= BASE_URL ?>/share/manage?id=<?= $album['id'] ?>" class="btn" style="background-color: var(--success-color); margin-right: 15px;">Gérer les partages</a>
-                <form action="<?= BASE_URL ?>/album/delete" method="POST" style="display:inline; padding: 0; box-shadow: none; background: transparent;" onsubmit="return confirm('Action irréversible. Confirmer la suppression ?');">
+            <div style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 15px; align-items: stretch;">
+                <a href="<?= BASE_URL ?>/album/edit?id=<?= $album['id'] ?>" class="btn" style="display: flex; align-items: center;">Éditer l'album</a>
+                
+                <a href="<?= BASE_URL ?>/share/manage?id=<?= $album['id'] ?>" class="btn" style="background-color: var(--success-color); display: flex; align-items: center;">Gérer les partages</a>
+                
+                <form action="<?= BASE_URL ?>/album/delete" method="POST" style="margin: 0; padding: 0; box-shadow: none; background: transparent; display: flex;" onsubmit="return confirm('Action irréversible. Confirmer la suppression ?');">
                     <input type="hidden" name="id" value="<?= $album['id'] ?>">
-                    <button type="submit" style="background-color: var(--danger-color);">Supprimer l'album</button>
+                    <button type="submit" class="btn" style="background-color: var(--danger-color); margin: 0; font-family: inherit;">Supprimer l'album</button>
                 </form>
             </div>
         <?php endif; ?>

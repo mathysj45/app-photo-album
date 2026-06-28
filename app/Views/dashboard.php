@@ -7,60 +7,74 @@
     <title>Tableau de bord</title>
 </head>
 <body>
-    <h1>Tableau de bord</h1>
     <nav>
-        <a href="<?= BASE_URL ?>/logout">Se déconnecter</a>
+        <span style="color: white; font-weight: bold;">Mon Application Photo</span>
+        <a href="<?= BASE_URL ?>/logout" style="color: var(--danger-color);">Se déconnecter</a>
     </nav>
     <main>
-    <h2>Mes albums personnels</h2>
-    <a href="<?= BASE_URL ?>/album/create" style="display:inline-block; margin-bottom:15px; padding:8px 12px; background:var(--accent-color); color:#fff; border-radius:4px;">Créer un album</a>
-    <ul>
-        <?php foreach ($albums as $album): ?>
-            <li>
-                <strong><a href="<?= BASE_URL ?>/album/show?id=<?= $album['id'] ?>"><?= htmlspecialchars($album['title']) ?></a></strong>
-                <p><?= htmlspecialchars((string)$album['description']) ?></p>
-                <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small><br>
-                <small>Étiquettes: <?= htmlspecialchars(implode(', ', $album['tags'])) ?></small><br>
-                <a href="<?= BASE_URL ?>/photo/upload?album_id=<?= $album['id'] ?>">Ajouter une photo</a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+        <h2>Mes albums personnels</h2>
+        <a href="<?= BASE_URL ?>/album/create" class="btn" style="margin-bottom: 20px;">Créer un album</a>
+        
+        <?php if (empty($albums)): ?>
+            <p>Aucun album personnel.</p>
+        <?php else: ?>
+            <ul>
+                <?php foreach ($albums as $album): ?>
+                    <li>
+                        <strong><a href="<?= BASE_URL ?>/album/show?id=<?= $album['id'] ?>"><?= htmlspecialchars($album['title']) ?></a></strong>
+                        <p><?= htmlspecialchars((string)$album['description']) ?></p>
+                        <small>Visibilité: <?= htmlspecialchars($album['visibility']) ?></small><br>
+                        <small>Étiquettes: <?= htmlspecialchars(implode(', ', $album['tags'])) ?></small><br>
+                        
+                        <div style="margin-top: auto; display: flex; gap: 10px; align-items: stretch; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                            <a href="<?= BASE_URL ?>/photo/upload?album_id=<?= $album['id'] ?>" class="btn" style="flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; margin: 0;">Ajouter photo</a>
+                            <form action="<?= BASE_URL ?>/album/delete" method="POST" style="margin: 0; padding: 0; box-shadow: none; background: transparent; flex: 1; display: flex;" onsubmit="return confirm('Action irréversible. Confirmer la suppression de cet album et de toutes ses photos ?');">
+                                <input type="hidden" name="id" value="<?= $album['id'] ?>">
+                                <button type="submit" class="btn" style="background-color: var(--danger-color); width: 100%; margin: 0; padding: 8px; display: flex; align-items: center; justify-content: center; font-family: inherit;">Supprimer</button>
+                            </form>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
 
-    <h2 style="margin-top: 40px;">Albums partagés avec moi</h2>
-    <?php if (empty($sharedAlbums)): ?>
-        <p>Aucun album partagé.</p>
-    <?php else: ?>
-        <ul>
-            <?php foreach ($sharedAlbums as $shared): ?>
-                <li>
-                    <strong><a href="<?= BASE_URL ?>/album/show?id=<?= $shared['id'] ?>"><?= htmlspecialchars($shared['title']) ?></a></strong>
-                    <p><?= htmlspecialchars((string)$shared['description']) ?></p>
-                    <small>Propriétaire: <?= htmlspecialchars($shared['owner_name']) ?></small><br>
-                    <small>Permission: <?= htmlspecialchars($shared['permission']) === 'edit' ? 'Lecture et Écriture' : 'Lecture seule' ?></small>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
+        <h2 style="margin-top: 40px;">Albums partagés avec moi</h2>
+        <?php if (empty($sharedAlbums)): ?>
+            <p>Aucun album partagé.</p>
+        <?php else: ?>
+            <ul>
+                <?php foreach ($sharedAlbums as $shared): ?>
+                    <li>
+                        <strong><a href="<?= BASE_URL ?>/album/show?id=<?= $shared['id'] ?>"><?= htmlspecialchars($shared['title']) ?></a></strong>
+                        <p><?= htmlspecialchars((string)$shared['description']) ?></p>
+                        <small>Propriétaire: <?= htmlspecialchars($shared['owner_name']) ?></small><br>
+                        <small>Permission: <?= htmlspecialchars($shared['permission']) === 'edit' ? 'Lecture et Écriture' : 'Lecture seule' ?></small>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
 
-    <h2 style="margin-top: 40px;">Mes photos favorites</h2>
-    <?php if (empty($favoritePhotos)): ?>
-        <p>Aucune photo favorite.</p>
-    <?php else: ?>
-        <ul style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
-            <?php foreach ($favoritePhotos as $fav): ?>
-                <li>
-                    <a href="<?= BASE_URL ?>/album/show?id=<?= $fav['album_id'] ?>">
-                        <img src="<?= BASE_URL ?><?= htmlspecialchars($fav['file_path']) ?>" alt="Favorite" style="width:100%; height:150px; object-fit:cover;">
-                    </a>
-                    <small>Album: <?= htmlspecialchars($fav['album_title']) ?></small>
-                    <form action="<?= BASE_URL ?>/favorite/toggle" method="POST" style="box-shadow:none; padding:0; margin-top:10px;">
-                        <input type="hidden" name="photo_id" value="<?= $fav['id'] ?>">
-                        <button type="submit" style="padding:4px 8px; font-size:0.8rem; background:#e74c3c;">Retirer des favoris</button>
-                    </form>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-</main>
+        <h2 style="margin-top: 40px;">Mes photos favorites</h2>
+        <?php if (empty($favoritePhotos)): ?>
+            <p>Aucune photo favorite.</p>
+        <?php else: ?>
+            <ul class="photo-grid">
+                <?php foreach ($favoritePhotos as $fav): ?>
+                    <li class="photo-card" style="padding: 0; overflow: hidden;">
+                        <a href="<?= BASE_URL ?>/album/show?id=<?= $fav['album_id'] ?>" style="display: block;">
+                            <img src="<?= BASE_URL ?><?= htmlspecialchars($fav['file_path']) ?>" alt="Favorite" style="width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid var(--border-color); border-radius: 0;">
+                        </a>
+                        <div style="padding: 15px;">
+                            <small style="display: block; margin-bottom: 10px;">Album: <?= htmlspecialchars($fav['album_title']) ?></small>
+                            <form action="<?= BASE_URL ?>/favorite/toggle" method="POST" style="box-shadow:none; padding:0; margin:0; background: transparent;">
+                                <input type="hidden" name="photo_id" value="<?= $fav['id'] ?>">
+                                <button type="submit" class="btn" style="background-color: var(--danger-color); width: 100%;">Retirer des favoris</button>
+                            </form>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </main>
 </body>
 </html>

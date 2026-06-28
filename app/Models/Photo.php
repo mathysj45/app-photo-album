@@ -12,12 +12,14 @@ class Photo {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function create(int $albumId, string $filePath, ?string $description): bool {
-        $stmt = $this->db->prepare("INSERT INTO photos (album_id, file_path, description) VALUES (:album_id, :file_path, :description)");
+    public function create(int $albumId, string $filePath, string $description, ?string $captureDate = null, ?string $location = null): bool {
+        $stmt = $this->db->prepare("INSERT INTO photos (album_id, file_path, description, capture_date, location) VALUES (:album_id, :file_path, :description, :capture_date, :location)");
         return $stmt->execute([
             'album_id' => $albumId,
             'file_path' => $filePath,
-            'description' => $description
+            'description' => $description,
+            'capture_date' => $captureDate,
+            'location' => $location
         ]);
     }
 

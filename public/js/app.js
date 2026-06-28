@@ -83,3 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const view = new LightboxView();
     const controller = new LightboxController(model, view);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedScrollPosition = localStorage.getItem('album_scroll_position');
+    if (savedScrollPosition) {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+        localStorage.removeItem('album_scroll_position');
+    }
+
+    document.querySelectorAll('.photo-card form').forEach(form => {
+        form.addEventListener('submit', () => {
+            localStorage.setItem('album_scroll_position', window.scrollY);
+        });
+    });
+});
