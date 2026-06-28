@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Auth;
 use App\Models\Photo;
-use App\Models\Album;
+use App\Core\Logger;
 
 class PhotoController extends Controller {
     private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
@@ -46,7 +46,8 @@ class PhotoController extends Controller {
                         $relativePath = '/uploads/' . $newFileName;
                         
                         if ($photoModel->create($albumId, $relativePath, $description)) {
-                            header('Location: ' . BASE_URL . '/dashboard');
+                            Logger::log("Photo téléchargée avec succès. Chemin : " . $relativePath, 'INFO');
+                            header("Location: " . BASE_URL . "/dashboard");
                             exit;
                         }
                     }
@@ -78,6 +79,7 @@ class PhotoController extends Controller {
             $location = trim($_POST['location'] ?? '');
 
             $photoModel->update($photoId, $description, $captureDate, $location);
+            Logger::log("Photo métadonnées mises à jour ID : " . $photoId, 'INFO');
             header('Location: ' . BASE_URL . '/album/show?id=' . $photo['album_id']);
             exit;
         }
@@ -98,8 +100,10 @@ class PhotoController extends Controller {
                     $filePath = __DIR__ . '/../../public' . $photo['file_path'];
                     if (file_exists($filePath)) {
                         unlink($filePath);
+                        Logger::log("Fichier photo supprimé physiquement du disque : " . $filePath, 'WARNING');
                     }
                     $photoModel->delete($photoId);
+                    Logger::log("Enregistrement photo supprimé de la BDD ID : " . $photoId, 'WARNING');
                 }
             }
             $redirectUrl = $albumId ? '/album/show?id=' . $albumId : '/dashboard';
