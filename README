@@ -1,0 +1,42 @@
+﻿Guide d'installation et de lancement de l'application
+
+Ce document détaille les étapes nécessaires pour installer, configurer et exécuter l'application sur votre machine locale.
+Prérequis
+
+Assurez-vous que les outils suivants sont installés sur votre système :
+
+* PHP (version 8.x recommandée)
+* Serveur local (XAMPP, WAMP, MAMP ou équivalent avec MySQL)
+* Git
+* Composer (pour la gestion des dépendances)
+
+Étapes d'installation
+
+1. Cloner le dépôt :
+
+git clone [URL_DU_REPO_GITHUB]
+
+2. Installation des dépendances :
+
+Naviguez dans le dossier du projet via votre terminal et exécutez : composer install
+
+3. Configuration de la base de données :
+
+   * Importez le fichier SQL situé à la racine du projet via votre interface MySQL (ex: phpMyAdmin).
+   * Configurez vos paramètres de connexion dans le fichier Database.php en renseignant les accès à votre base locale.
+
+Lancement de l'application
+
+   1. Démarrez votre serveur local (Apache et MySQL).
+   2. Placez le dossier du projet dans le répertoire racine de votre serveur (ex: htdocs pour XAMPP).
+   3. Ouvrez votre navigateur et accédez à l'URL locale : http://localhost/[nom_du_dossier].
+
+Dépannage
+
+Problème
+	1.Erreur de connexion BDD
+	2.Erreur 404 / Route non trouvée
+
+Solution
+	1.Vérifiez vos identifiants dans config.php et assurez-vous que MySQL est actif.
+	2.Vérifiez si le fichier .htaccess est correctement présent à la racine.
