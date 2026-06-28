@@ -25,8 +25,14 @@ class AlbumAccess {
     }
 
     public function addAccess(int $albumId, int $userId, string $permission = 'view'): bool {
-        $stmt = $this->db->prepare("INSERT INTO album_access (album_id, user_id, permission) VALUES (:album_id, :user_id, :permission) ON DUPLICATE KEY UPDATE permission = :permission");
-        return $stmt->execute(['album_id' => $albumId, 'user_id' => $userId, 'permission' => $permission]);
+        $stmt = $this->db->prepare("INSERT INTO album_access (album_id, user_id, permission) VALUES (:album_id, :user_id, :permission) ON DUPLICATE KEY UPDATE permission = :permission_update");
+        
+        return $stmt->execute([
+            'album_id' => $albumId,
+            'user_id' => $userId,
+            'permission' => $permission,
+            'permission_update' => $permission
+        ]);
     }
 
     public function removeAccess(int $albumId, int $userId): bool {
